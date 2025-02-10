@@ -29,6 +29,14 @@
 			);
 			target = 3AB0E7792D59AC030084BFB3 /* SOProfiles */;
 		};
+		3AB0E8022D59B68C0084BFB3 /* Exceptions for "SOProfiles" folder in "SOProfilesTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Models/Profile.swift,
+				Services/ProfilesService.swift,
+			);
+			target = 3AB0E78F2D59AC050084BFB3 /* SOProfilesTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -36,6 +44,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				3AB0E7A22D59AC050084BFB3 /* Exceptions for "SOProfiles" folder in "SOProfiles" target */,
+				3AB0E8022D59B68C0084BFB3 /* Exceptions for "SOProfiles" folder in "SOProfilesTests" target */,
 			);
 			path = SOProfiles;
 			sourceTree = "<group>";
