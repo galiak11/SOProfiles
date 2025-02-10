@@ -19,6 +19,11 @@ class Profile: Decodable {
   var account_id: Int
   var display_name: String
   var location: String?
-  var creation_date: TimeInterval
+
+  private var creation_date: TimeInterval
+  var member_date: Date {
+    Date(timeIntervalSince1970: creation_date)
+  }
+
   var profile_image: String
 }

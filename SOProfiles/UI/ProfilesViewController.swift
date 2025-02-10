@@ -57,7 +57,7 @@ extension ProfilesViewController {
     if tableView.superview == nil {
       tableView.translatesAutoresizingMaskIntoConstraints = false
       tableView.dataSource = self
-      tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ProfileCell")
+      tableView.register(ProfileCell.self, forCellReuseIdentifier: ProfileCell.identifier)
 
       tableView.rowHeight = UITableView.automaticDimension
       tableView.estimatedRowHeight = 120
@@ -84,10 +84,11 @@ extension ProfilesViewController: UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "ProfileCell", for: indexPath)
-    let profile = viewModel.profiles[indexPath.row]
-    cell.textLabel?.text = profile.display_name
-    cell.detailTextLabel?.text = profile.location
+    
+    let cell = tableView.dequeueReusableCell(withIdentifier: ProfileCell.identifier, for: indexPath)
+    guard let profileCell = cell as? ProfileCell else { return cell }
+
+    profileCell.profile = viewModel.profiles[indexPath.row]
     return cell
   }
 }
