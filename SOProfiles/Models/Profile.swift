@@ -25,5 +25,6 @@ class Profile: Decodable {
     Date(timeIntervalSince1970: creation_date)
   }
 
-  var profile_image: String
+  private var profile_image: String
+  var profile_image_url: URL? { URL(string: profile_image) }
 }

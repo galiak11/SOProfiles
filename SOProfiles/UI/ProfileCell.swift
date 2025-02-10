@@ -6,10 +6,16 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ProfileCell: UITableViewCell {
 
   static let identifier = "ProfileCell"
+
+  private static var placeholderImage = {
+    UIImage(systemName: "person.circle")?
+      .withTintColor(.secondarySystemFill, renderingMode: .alwaysOriginal)
+  }()
 
   var profile: Profile? {
     didSet {
@@ -26,7 +32,26 @@ class ProfileCell: UITableViewCell {
       dateFormatter.dateFormat = "dd MMM, yyyy"
       dateFormatter.locale = Locale.current
       let member_since = dateFormatter.string(from: profile.member_date)
-      dateLabel.text = "Member since: \(member_since)"
+      dateLabel.text = NSLocalizedString("Member since: \(member_since)", comment: "")
+
+      if let url = profile.profile_image_url {
+        let processor = RoundCornerImageProcessor(cornerRadius: 25)
+        userImageView.kf.setImage(with: url,
+                                  placeholder: ProfileCell.placeholderImage,
+                                      options: [
+                                        .diskCacheExpiration(.never),
+                                        .processor(processor),
+                                         // .forceRefresh, // debug
+                                        .transition(.fade(0.3)),
+                                      ])
+      } else {
+        userImageView.image = ProfileCell.placeholderImage
+      }
+    } else {
+      nameLabel.text = ""
+      locationLabel.text = ""
+      dateLabel.text = ""
+      userImageView.image = ProfileCell.placeholderImage
     }
   }
 
@@ -35,9 +60,6 @@ class ProfileCell: UITableViewCell {
     imageView.contentMode = .scaleAspectFill
     imageView.clipsToBounds = true
     imageView.translatesAutoresizingMaskIntoConstraints = false
-    imageView.image = UIImage(systemName: "person.circle")?
-      .withTintColor(.secondarySystemFill, renderingMode: .alwaysOriginal)
-
     return imageView
   }()
 

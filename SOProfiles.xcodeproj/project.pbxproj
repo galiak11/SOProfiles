@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3AB0E8342D59C12F0084BFB3 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3AB0E8332D59C12F0084BFB3 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		3AB0E7912D59AC050084BFB3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -62,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3AB0E8342D59C12F0084BFB3 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +118,7 @@
 			);
 			name = SOProfiles;
 			packageProductDependencies = (
+				3AB0E8332D59C12F0084BFB3 /* Kingfisher */,
 			);
 			productName = SOProfiles;
 			productReference = 3AB0E77A2D59AC030084BFB3 /* SOProfiles.app */;
@@ -169,6 +175,9 @@
 			);
 			mainGroup = 3AB0E7712D59AC030084BFB3;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3AB0E8322D59C12F0084BFB3 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3AB0E77B2D59AC030084BFB3 /* Products */;
 			projectDirPath = "";
@@ -467,6 +476,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3AB0E8322D59C12F0084BFB3 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3AB0E8332D59C12F0084BFB3 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3AB0E8322D59C12F0084BFB3 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3AB0E7722D59AC030084BFB3 /* Project object */;
 }
