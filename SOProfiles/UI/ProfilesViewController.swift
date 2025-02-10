@@ -81,6 +81,19 @@ extension ProfilesViewController {
 
 extension ProfilesViewController: UITableViewDelegate {
 
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+      tableView.deselectRow(at: indexPath, animated: true)
+    let profile = viewModel.profiles[indexPath.row]
+    let detailVC = ProfileDetailViewController(profile: profile)
+
+    detailVC.modalPresentationStyle = .pageSheet
+    if let sheet = detailVC.sheetPresentationController {
+      sheet.detents = [.medium(), .large()]
+      sheet.prefersGrabberVisible = true
+    }
+    present(detailVC, animated: true, completion: nil)
+  }
+
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     let offsetY = scrollView.contentOffset.y
     let contentHeight = scrollView.contentSize.height
