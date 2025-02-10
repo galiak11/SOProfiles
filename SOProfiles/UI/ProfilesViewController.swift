@@ -27,8 +27,8 @@ class ProfilesViewController: UIViewController {
     }
   }
 
-  func fetchProfiles() async {
-    await viewModel.fetchProfiles()
+  func fetchProfiles(next: Bool = false) async {
+    await viewModel.fetchProfiles(next: next)
     updateUI()
   }
 
@@ -57,6 +57,7 @@ extension ProfilesViewController {
     if tableView.superview == nil {
       tableView.translatesAutoresizingMaskIntoConstraints = false
       tableView.dataSource = self
+      tableView.delegate = self
       tableView.register(ProfileCell.self, forCellReuseIdentifier: ProfileCell.identifier)
 
       tableView.rowHeight = UITableView.automaticDimension
@@ -76,6 +77,25 @@ extension ProfilesViewController {
   }
 }
 
+// MARK: TableView Delegate
+
+extension ProfilesViewController: UITableViewDelegate {
+
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    let offsetY = scrollView.contentOffset.y
+    let contentHeight = scrollView.contentSize.height
+    let height = scrollView.frame.size.height
+
+    if offsetY > contentHeight - height {
+      if !viewModel.isFetching {
+        Task {
+          await fetchProfiles(next: true)
+        }
+      }
+    }
+  }
+}
+
 // MARK: TableView Data Source
 
 extension ProfilesViewController: UITableViewDataSource {
@@ -84,7 +104,7 @@ extension ProfilesViewController: UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    
+
     let cell = tableView.dequeueReusableCell(withIdentifier: ProfileCell.identifier, for: indexPath)
     guard let profileCell = cell as? ProfileCell else { return cell }
 
