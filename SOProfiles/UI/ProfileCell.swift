@@ -38,12 +38,11 @@ class ProfileCell: UITableViewCell {
         let processor = RoundCornerImageProcessor(cornerRadius: 25)
         userImageView.kf.setImage(with: url,
                                   placeholder: ProfileCell.placeholderImage,
-                                      options: [
-                                        .diskCacheExpiration(.never),
-                                        .processor(processor),
-                                         // .forceRefresh, // debug
-                                        .transition(.fade(0.3)),
-                                      ])
+                                  options: [
+                                    .processor(processor),
+                                    // .forceRefresh, // debug
+                                    .transition(.fade(0.3)),
+                                  ])
       } else {
         userImageView.image = ProfileCell.placeholderImage
       }
@@ -53,6 +52,12 @@ class ProfileCell: UITableViewCell {
       dateLabel.text = ""
       userImageView.image = ProfileCell.placeholderImage
     }
+  }
+
+  override func prepareForReuse() {
+    super.prepareForReuse()
+    userImageView.kf.cancelDownloadTask()
+    userImageView.image = nil
   }
 
   private let userImageView: UIImageView = {
