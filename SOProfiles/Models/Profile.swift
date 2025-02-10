@@ -9,6 +9,10 @@ import Foundation
 
 class ProfilesList: Decodable {
   var profiles: [Profile]
+
+  enum CodingKeys: String, CodingKey {
+    case profiles = "items"
+  }
 }
 
 class Profile: Decodable {

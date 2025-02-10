@@ -1,0 +1,93 @@
+//
+//  ProfilesViewController.swift
+//  SOProfiles
+//
+//  Created by Galia Kaufman on 2/9/25.
+//
+
+import UIKit
+
+class ProfilesViewController: UIViewController {
+
+  private let viewModel: ProfilesViewModel
+  private let tableView = UITableView()
+
+  init(viewModel: ProfilesViewModel) {
+    self.viewModel = viewModel
+    super.init(nibName: nil, bundle: nil)
+  }
+
+  required init?(coder: NSCoder) { fatalError("\(ProfilesViewController.self) init(coder:) has not been implemented") }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    setupUI()
+    Task {
+      await fetchProfiles()
+    }
+  }
+
+  func fetchProfiles() async {
+    await viewModel.fetchProfiles()
+    updateUI()
+  }
+
+  func updateUI() {
+
+    if viewModel.profiles.isEmpty {
+      // TODO: Add empty state
+      print ("No profiles")
+    }
+    tableView.reloadData()
+  }
+}
+
+// MARK: UI Setup
+
+extension ProfilesViewController {
+
+  private func setupUI() {
+    title = NSLocalizedString("StackOverflow Profiles", comment: "")
+    view.backgroundColor = .white
+
+    setupTableView()
+  }
+
+  private func setupTableView() {
+    if tableView.superview == nil {
+      tableView.translatesAutoresizingMaskIntoConstraints = false
+      tableView.dataSource = self
+      tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ProfileCell")
+
+      tableView.rowHeight = UITableView.automaticDimension
+      tableView.estimatedRowHeight = 120
+
+      view.addSubview(tableView)
+
+      NSLayoutConstraint.activate([
+        tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+      ])
+    }
+    tableView.isHidden = false
+    self.tableView.reloadData()
+  }
+}
+
+// MARK: TableView Data Source
+
+extension ProfilesViewController: UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return viewModel.profiles.count
+  }
+
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: "ProfileCell", for: indexPath)
+    let profile = viewModel.profiles[indexPath.row]
+    cell.textLabel?.text = profile.display_name
+    cell.detailTextLabel?.text = profile.location
+    return cell
+  }
+}
