@@ -29,16 +29,9 @@ class ProfilesViewController: UIViewController {
 
   func fetchProfiles(next: Bool = false) async {
     await viewModel.fetchProfiles(next: next)
-    updateUI()
-  }
-
-  func updateUI() {
-
-    if viewModel.profiles.isEmpty {
-      // TODO: Add empty state
-      print ("No profiles")
+    if !viewModel.isFetching {
+      tableView.reloadData()
     }
-    tableView.reloadData()
   }
 }
 
@@ -73,7 +66,6 @@ extension ProfilesViewController {
       ])
     }
     tableView.isHidden = false
-    self.tableView.reloadData()
   }
 }
 

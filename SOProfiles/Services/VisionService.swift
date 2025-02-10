@@ -18,6 +18,11 @@ class VisionService {
     }
 
     let request = VNDetectFaceRectanglesRequest()
+
+    #if targetEnvironment(simulator)
+    request.enableSimulator()
+    #endif
+
     let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
 
     do {
@@ -29,3 +34,24 @@ class VisionService {
     return request.results
   }
 }
+
+// Using CPU only enables running Vision tasks on the iOS simulator (during development).
+#if targetEnvironment(simulator)
+private extension VNDetectFaceRectanglesRequest {
+  func enableSimulator() {
+    if #available(iOS 17.0, *) {
+      // Iterate over all compute devices to find the CPU device
+      let allDevices = MLComputeDevice.allComputeDevices
+      for device in allDevices {
+        if case .cpu = device {
+          setComputeDevice(device, for: .main)
+          break
+        }
+      }
+    } else {
+      // For earlier iOS versions, fallback to using usesCPUOnly
+      usesCPUOnly = true
+    }
+  }
+}
+#endif

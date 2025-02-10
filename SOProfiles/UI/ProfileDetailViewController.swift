@@ -16,8 +16,24 @@ class ProfileDetailViewController: UIViewController {
     }
   }
 
+  var faces: Int = 0 {
+    didSet {
+      self.infoLabel.text =
+        switch faces {
+        case 0: NSLocalizedString("No face detected", comment: "")
+        case 1: NSLocalizedString("Detected One face", comment: "")
+        case -1: ""
+        default: NSLocalizedString("Detected \(faces) faces", comment: "")
+        }
+    }
+  }
+
   private let nameLabel: UILabel = {
     return UILabel(textStyle: .headline)
+  }()
+
+  private let infoLabel: UILabel = {
+    return UILabel(textStyle: .body)
   }()
 
   private let profileImageView: UIImageView = {
@@ -60,8 +76,24 @@ class ProfileDetailViewController: UIViewController {
                                        .forceRefresh, // debug
                                       .transition(.fade(0.3)),
                                     ])
+      { [weak self] result in
+        switch result {
+        case .success(_): self?.detectFaces()
+        case .failure(let error):
+          print("Failed to detect faces for image from url: \(url). Error: \(error)")
+        }
+      }
     } else {
       profileImageView.image = placeholderImage
+    }
+  }
+
+  func detectFaces() {
+    if let image = profileImageView.image,
+       let count = image.countFaces() {
+      faces = count
+    } else {
+      faces = -1
     }
   }
 
@@ -70,6 +102,7 @@ class ProfileDetailViewController: UIViewController {
     view.backgroundColor = .systemBackground
 
     view.addSubview(nameLabel)
+    view.addSubview(infoLabel)
     view.addSubview(profileImageView)
 
     let space: CGFloat = 16
@@ -81,6 +114,10 @@ class ProfileDetailViewController: UIViewController {
       nameLabel.bottomAnchor.constraint(equalTo: profileImageView.topAnchor, constant: -space),
       nameLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: edgeSpace),
       nameLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -edgeSpace),
+
+      infoLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: space),
+      infoLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: edgeSpace),
+      infoLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -edgeSpace),
     ])
   }
 }
@@ -92,6 +129,15 @@ private extension UILabel {
     font = UIFont.preferredFont(forTextStyle: textStyle)
     adjustsFontForContentSizeCategory = true
     translatesAutoresizingMaskIntoConstraints = false
+  }
+}
+
+extension UIImage {
+  func countFaces() -> Int? {
+    if let observations = VisionService.shared.detectFaces(for: self) {
+      return observations.count
+    }
+    return nil
   }
 }
 
