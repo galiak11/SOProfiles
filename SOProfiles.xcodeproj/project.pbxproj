@@ -38,6 +38,7 @@
 			membershipExceptions = (
 				Models/Profile.swift,
 				Services/ProfilesService.swift,
+				Services/VisionService.swift,
 				ViewModels/ProfilesViewModel.swift,
 			);
 			target = 3AB0E78F2D59AC050084BFB3 /* SOProfilesTests */;
