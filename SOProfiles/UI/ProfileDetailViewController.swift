@@ -16,14 +16,14 @@ class ProfileDetailViewController: UIViewController {
     }
   }
 
-  var faces: Int = 0 {
+  var faceCount: Int = 0 {
     didSet {
       self.infoLabel.text =
-        switch faces {
+        switch faceCount {
         case 0: NSLocalizedString("No face detected", comment: "")
         case 1: NSLocalizedString("Detected One face", comment: "")
         case -1: ""
-        default: NSLocalizedString("Detected \(faces) faces", comment: "")
+        default: NSLocalizedString("Detected \(faceCount) faces", comment: "")
         }
     }
   }
@@ -90,10 +90,12 @@ class ProfileDetailViewController: UIViewController {
 
   func detectFaces() {
     if let image = profileImageView.image,
-       let count = image.countFaces() {
-      faces = count
+       let result = VisionService.shared.drawFaceRects(for: image) {
+      profileImageView.image = result.image
+      faceCount = result.faceCount
     } else {
-      faces = -1
+      print("Error detecting faces in profile: \(profile)")
+      faceCount = -1
     }
   }
 
@@ -131,13 +133,3 @@ private extension UILabel {
     translatesAutoresizingMaskIntoConstraints = false
   }
 }
-
-extension UIImage {
-  func countFaces() -> Int? {
-    if let observations = VisionService.shared.detectFaces(for: self) {
-      return observations.count
-    }
-    return nil
-  }
-}
-

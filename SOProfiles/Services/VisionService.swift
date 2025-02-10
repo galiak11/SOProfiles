@@ -8,10 +8,36 @@
 import Vision
 import UIKit
 
+typealias ImageCountTuple = (image: UIImage, faceCount: Int)
+
 class VisionService {
   static let shared = VisionService()
 
-  func detectFaces(for image: UIImage) -> [VNFaceObservation]? {
+  func drawFaceRects(for image: UIImage) -> ImageCountTuple? {
+    guard let rects = faceRects(for: image) else { return nil }
+    var rectImage = image
+    var countRects = rects.count
+    for rect in rects {
+      UIGraphicsBeginImageContext(image.size)
+      rectImage.draw(at: .zero)
+      if let context = UIGraphicsGetCurrentContext() {
+        context.setStrokeColor(UIColor.systemGreen .cgColor)
+        context.setLineWidth(4.0)
+        context.stroke(rect.normalizeWith(image.size))
+
+        if let imageFromContext = UIGraphicsGetImageFromCurrentImageContext() {
+          rectImage = imageFromContext
+        }
+        UIGraphicsEndPDFContext()
+      } else {
+        print ("Error: Cannot draw rect \(rect) in context")
+        countRects -= 1
+      }
+    }
+    return countRects >= 0 ? (rectImage, countRects) : nil
+  }
+
+  private func detectFaces(for image: UIImage) -> [VNFaceObservation]? {
     guard let cgImage = image.cgImage else {
       print("Error in face detection: Failed to convert UIImage to CGImage")
       return nil
@@ -19,9 +45,9 @@ class VisionService {
 
     let request = VNDetectFaceRectanglesRequest()
 
-    #if targetEnvironment(simulator)
+#if targetEnvironment(simulator)
     request.enableSimulator()
-    #endif
+#endif
 
     let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
 
@@ -32,6 +58,31 @@ class VisionService {
       return nil
     }
     return request.results
+  }
+
+  private func faceRects(for image: UIImage) -> [CGRect]? {
+    guard let observations = detectFaces(for: image) else { return nil }
+    return observations.map {
+      let scaledBox = $0.boundingBox.scaleTo(image.size)
+      return VNNormalizedRectForImageRect(scaledBox, Int(image.size.width), Int(image.size.height))
+    }
+  }
+}
+
+private extension CGRect {
+  func scaleTo(_ destination: CGSize) -> CGRect {
+    return CGRect(x: origin.x * destination.width,
+                  y: (1 - origin.y - size.height) * destination.height,
+                  width: size.width * destination.width,
+                  height: size.height * destination.height)
+  }
+
+  func normalizeWith(_ destination: CGSize) -> CGRect {
+    return CGRect(
+      x: origin.x * destination.width,
+      y: origin.y * destination.height,
+      width: size.width * destination.width,
+      height: size.height * destination.height)
   }
 }
 
