@@ -7,12 +7,16 @@
 
 import Foundation
 
-class ProfilesService {
+protocol ProfilesServiceProtocol {
+  func fetchProfiles() async -> Result<[Profile], NetworkError>
+}
+
+class ProfilesService: ProfilesServiceProtocol {
   static let shared = ProfilesService()
 
   private let URL_STRING = "https://api.stackexchange.com/2.2/users?site=stackoverflow"
 
-  func fetchProfiles(page: Int = 1) async -> Result<[Profile], NetworkError> {
+  func fetchProfiles() async -> Result<[Profile], NetworkError> {
     do {
       // TODO: build URL
       guard let url = URL(string: URL_STRING) else {

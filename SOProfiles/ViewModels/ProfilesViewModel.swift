@@ -8,7 +8,7 @@
 class ProfilesViewModel {
 
   private(set) var profiles: [Profile] = []
-  var service = ProfilesService.shared
+  var service: ProfilesServiceProtocol = ProfilesService.shared
 
   func fetchProfiles() async {
     let result = await service.fetchProfiles()

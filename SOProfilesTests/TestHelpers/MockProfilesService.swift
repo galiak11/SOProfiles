@@ -5,7 +5,7 @@
 //  Created by Galia Kaufman on 2/9/25.
 //
 
-class MockProfilesService {
+class MockProfilesService: ProfilesServiceProtocol {
 
   var shouldSucceed = true
 
@@ -15,5 +15,14 @@ class MockProfilesService {
     } else {
       return Result.failure(.invalidResponse(statusCode: 404))
     }
+  }
+}
+
+extension ProfilesViewModel {
+
+  // Enables injecting this Mock service in test cases.
+  convenience init(service: MockProfilesService) {
+    self.init()
+    self.service = service
   }
 }

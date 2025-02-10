@@ -34,6 +34,7 @@
 			membershipExceptions = (
 				Models/Profile.swift,
 				Services/ProfilesService.swift,
+				ViewModels/ProfilesViewModel.swift,
 			);
 			target = 3AB0E78F2D59AC050084BFB3 /* SOProfilesTests */;
 		};
